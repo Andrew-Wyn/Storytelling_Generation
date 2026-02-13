@@ -5,37 +5,48 @@ import torch
 import json
 import os
 
-MODEL_NAME = "SemanticAlignment/Mistral-v0.1-Italian-LAPT-instruct"
+import argparse
 
-
-### PARAMETERS
-lang = "it"
-
-genre = "Biography"
-
-prefix = "Minerva7B_ItBio"
-
-temperatures = [0.7, 1.0, 1.3]
-
-reiterations = 25
-
-personalities = ["Dacia Maraini", "Gae Aulenti"]
-
+### CONSTANTS
 SYSTEM_PROMPT = "Il tuo compito è generare testi informativi."
 
 USER_PROMPT = "Scrivi una biografia su {person}."
 
-output_folder = "outputs"
+### PARAMETERS
+# MODEL_NAME = "SemanticAlignment/Llama-3.1-8B-Italian-LAPT-instruct"
 
-# output name: Minerva7B_ItBio_07_Dacia_Maraini_001
+# language = "it"
 
-def main():
-    
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+# genre = "Biography"
+
+# prefix = "Minerva7B_ItBio"
+
+# temperatures = [0.7, 1.0, 1.3]
+
+# reiterations = 25
+
+# personalities = ["Dacia Maraini", "Gae Aulenti"]
+
+# output_folder = "outputs"
+
+# # output name: Minerva7B_ItBio_07_Dacia_Maraini_001
+
+def main(args):
+
+    model_name = args.model_name
+    language = args.language
+    genre = args.genre
+    prefix = args.prefix
+    temperatures = args.temperatures
+    reiterations = args.reiterations
+    personalities = args.personalities
+    output_folder = args.output_folder
+
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     generator = pipeline(
         "text-generation",
-        model=MODEL_NAME,
+        model=model_name,
         device_map="auto",
         dtype=torch.bfloat16
     )
@@ -78,8 +89,6 @@ def main():
 
                 generated_text = out["generated_text"][-1]["content"]
 
-                print(generated_text)
-
                 completions_tokens_number = len(tokenizer(generated_text)["input_ids"])
 
                 json_output_name = base_output_name+".json"
@@ -104,8 +113,24 @@ def main():
                     f_json,
                     indent=4)
 
-                input()
+                # input()
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+                    prog='ProgramName',
+                    description='What the program does',
+                    epilog='Text at the bottom of help')
+    # CLI Parameters
+    parser.add_argument('-m', '--model_name')
+    parser.add_argument('-l', '--language')
+    parser.add_argument('-g', '--genre')
+    parser.add_argument('-p', '--prefix')
+    parser.add_argument('-t', '--temperatures', type=float, nargs="+")
+    parser.add_argument('-r', '--reiterations')
+    parser.add_argument('-e', '--personalities', nargs="+")
+    parser.add_argument('-o', '--output_folder')
+
+    args = parser.parse_args()
+
+    main(args)
