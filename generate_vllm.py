@@ -1,4 +1,4 @@
-from transformers import pipeline
+from vllm import LLM, SamplingParams
 from transformers import AutoTokenizer
 from datetime import datetime
 import torch
@@ -30,12 +30,7 @@ def main(args):
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-    generator = pipeline(
-        "text-generation",
-        model=model_name,
-        device_map="auto",
-        dtype=torch.bfloat16
-    )
+    llm = LLM(model=model_name, max_model_len=8192, tensor_parallel_size=2)
 
     conversations = []
 
@@ -51,6 +46,7 @@ def main(args):
     for temperature in temperatures:
         for prompt_param in prompt_params:
             personality_prompt = USER_PROMPT[genre].format(x=prompt_param)
+            
             print(f"\tGenerating text with temperature: {temperature} | and parameter: {prompt_param}\n\t\tRunning Prompt: {personality_prompt}")
 
             conversations = [
@@ -63,21 +59,17 @@ def main(args):
             # get number of prompt tokens
             prompt_tokens_number = len(tokenizer(chat_samples)["input_ids"])
 
-            outputs = generator(
-                conversations,
-                max_new_tokens=2048,
-                temperature=temperature,
-                num_return_sequences=int(reiterations),
-                eos_token_id=[
-                    tokenizer.eos_token_id,
-                    tokenizer.convert_tokens_to_ids("<|eot_id|>"),  # 👈 critical
-                ],
+            sampling_params = SamplingParams(temperature=temperature, max_tokens=2048, n=int(reiterations))
+
+            outputs = llm.generate(
+                chat_samples,
+                sampling_params
             )
 
-            for i, out in enumerate(outputs):
+            for i, out in enumerate(outputs[0].outputs):
                 base_output_name = f"{model_prefix}_{temperature}_{prompt_param}_{i}".replace(".", "").replace(" ", "_")
 
-                generated_text = out["generated_text"][-1]["content"]
+                generated_text = out.text
 
                 completions_tokens_number = len(tokenizer(generated_text)["input_ids"])
 

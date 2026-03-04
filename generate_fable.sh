@@ -23,34 +23,17 @@
 # export HF_DATASETS_OFFLINE=0
 # export TRANSFORMERS_OFFLINE=0
 
-# cd  path/to/this/folder
+cd  path/to/this/folder
 
 # # load virtual environment
-# source .env/bin/activate
-
-
-# MODEL_NAME = "SemanticAlignment/Llama-3.1-8B-Italian-LAPT-instruct"
-
-# language = "it"
-
-# genre = "Biography"
-
-# prefix = "Minerva7B_ItBio"
-
-# temperatures = [0.7, 1.0, 1.3]
-
-# reiterations = 25
-
-# personalities = ["Dacia Maraini", "Gae Aulenti"]
-
-# output_folder = "outputs"
+source .env/bin/activate
 
 
 python generate.py --model_name SemanticAlignment/Llama-3.1-8B-Italian-SAVA-instruct \
     --language it \
-    --genre Bibliography \
-    --prefix Minerva7B_ItBio \
+    --genre Fable \
     --temperatures 0.7 1.0 1.3 \
     --reiterations 25 \
-    --personalities "Dacia Maraini" "Gae Aulenti" \
+    --prompt_params "(3-5 anni)" \
+                    "(6-10 anni)" \
     --output_folder outputs
