@@ -94,6 +94,7 @@ def main(args):
                         "model": model_prefix,
                         "temperature": temperature,
                         "date": datetime.today().strftime('%Y-%m-%d'),
+                        "text": generated_text,
                         "token_usage": {
                             "prompt_tokens": prompt_tokens_number,
                             "completion_tokens": completions_tokens_number,
