@@ -30,7 +30,7 @@ def main(args):
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-    llm = LLM(model=model_name, max_model_len=8192, tensor_parallel_size=2)
+    llm = LLM(model=model_name, max_model_len=4096, tensor_parallel_size=2)
 
     conversations = []
 
@@ -54,7 +54,7 @@ def main(args):
                 {"role": "user", "content": personality_prompt},
             ]
 
-            chat_samples = tokenizer.apply_chat_template(conversations, tokenize=False)
+            chat_samples = tokenizer.apply_chat_template(conversations, tokenize=False, add_generation_prompt=True)
 
             # get number of prompt tokens
             prompt_tokens_number = len(tokenizer(chat_samples)["input_ids"])

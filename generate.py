@@ -58,7 +58,7 @@ def main(args):
                 {"role": "user", "content": personality_prompt},
             ]
 
-            chat_samples = tokenizer.apply_chat_template(conversations, tokenize=False)
+            chat_samples = tokenizer.apply_chat_template(conversations, tokenize=False, add_generation_prompt=True)
 
             # get number of prompt tokens
             prompt_tokens_number = len(tokenizer(chat_samples)["input_ids"])
