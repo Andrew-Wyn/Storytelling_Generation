@@ -9,10 +9,20 @@ import argparse
 
 
 ### CONSTANTS
-SYSTEM_PROMPT = "Il tuo compito è generare testi informativi."
+#SYSTEM_PROMPT = "Il tuo compito è generare testi informativi."
+
+SYSTEM_PROMPT = {
+    "Biography": "Il tuo compito è generare testi informativi.",
+    "BioArchitect": "Il tuo compito è generare testi informativi.",
+    "News_Climate": "Il tuo compito è generare testi informativi.",
+    "Fable": "Il tuo compito è generare testi narrativi.",
+    "Press_Release": "Il tuo compito è generare testi narrativi.",
+    "Political_Speech": "Il tuo compito è generare testi argomentativi."
+}
 
 USER_PROMPT = {
     "Biography": "Scrivi una biografia su {x}",
+    "BioArchitect": "Scrivi una biografia su {x}",
     "News_Climate": "Scrivi un testo giornalistico sul cambiamento climatico a {x}",
     "Fable": "Scrivi una favola per bambini {x}",
     "Press_Release": "Scrivi un comunicato stampa sul modello linguistico di grandi dimensioni {x}",
@@ -50,7 +60,7 @@ def main(args):
             print(f"\tGenerating text with temperature: {temperature} | and parameter: {prompt_param}\n\t\tRunning Prompt: {personality_prompt}")
 
             conversations = [
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": SYSTEM_PROMPT[genre]},
                 {"role": "user", "content": personality_prompt},
             ]
 
