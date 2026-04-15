@@ -91,7 +91,7 @@ def main(args):
                     json.dump({
                         "language": language,
                         "genre": genre,
-                        "system_prompt": SYSTEM_PROMPT,
+                        "system_prompt": SYSTEM_PROMPT[genre],
                         "user_prompt": personality_prompt,
                         "model": model_prefix,
                         "temperature": temperature,
